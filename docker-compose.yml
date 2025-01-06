@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  flask-app-producer:
+    image: niznaor/ex1-producer  
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=main.py
+      - FLASK_RUN_HOST=0.0.0.0
+    depends_on:
+      - rabbitmq
+
+  flask-app-consumer:
+    image: niznaor/ex1-consumer
+    ports:
+      - "8080:5000"
+    environment:
+      - FLASK_APP=main.py
+      - FLASK_RUN_HOST=0.0.0.0
+    depends_on:
+      - rabbitmq
+      - mongo
+
+  rabbitmq:
+    image: "rabbitmq:management"
+    ports:
+      - "15672:15672"   
+      - "5672:5672"     
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+        - "27017:27017"
+    volumes:
+        - mongo_data:/data/db
+
+volumes:
+  rabbitmq_data:
+    driver: local
+  mongo_data:
+    driver: local
