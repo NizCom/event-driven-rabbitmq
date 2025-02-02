@@ -1,9 +1,7 @@
 import logging
 
 from flask import Flask, request, jsonify
-from .rabbitmq_connection import start_rabbitmq
 from .mongodb_connection import get_order_by_id
-import threading
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -39,11 +37,3 @@ def get_order_details():
             "error": "Internal Server Error",
             "message": str(e)
         }), 500
-
-
-def start_consumer_thread():
-    consumer_thread = threading.Thread(target=start_rabbitmq, daemon=True)
-    consumer_thread.start()
-
-
-start_consumer_thread()
